@@ -114,7 +114,7 @@ async function prompt(question, func) {
  */
 async function audio(sound) {
   const audioPath = path.join(__dirname, "audio", `${sound}.mp3`);
-  return spawn("mplayer", ["-slave", "-quiet", audioPath]);
+  return spawn("vlc", ["--intf", "dummy", audioPath]);
 }
 
 class Enemy {
