@@ -226,7 +226,6 @@ module.exports = async function tutorial() {
         dialogue("The Guide", "I wouldn't do this if i were you.");
         await delay(2000);
         TheGuide();
-        rl.write("");
         rl.prompt();
       } else if (option.toLowerCase() === "listen") {
         dialogue(name, "alright. I'll hear you out");

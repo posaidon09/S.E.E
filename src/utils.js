@@ -118,20 +118,58 @@ async function audio(sound) {
 }
 
 class Enemy {
-  constructor(name, health, power, moves) {
+  constructor(name, health, defense, power, moves) {
     this.name = name;
     this.health = health;
+    this.defense = defense;
     this.power = power;
     this.moves = moves;
   }
-
-  action(enemy, move) {
-    const damage = Math.ceil(Math.random() * 5) * this.power;
-    if (enemy.name === player.name) {
-      enemy.health -= damage;
-      set("health", player.health - damage);
+  action(move) {
+    if (move == "Heal") {
+      const heal = Math.floor(Math.random() * 10) + 20;
+      this.health += heal;
+      return heal;
     }
-    return damage;
+  }
+}
+
+class Battle {
+  constructor(enemy) {
+    this.enemy = enemy;
+  }
+  async start() {
+    await new Promise(async (resolve) => {
+      while (true) {
+        if (enemy.health < 0 || player.health < 0) {
+          console.log("Fight over");
+          set("health", 100);
+          resolve();
+          break;
+        }
+
+        await new Promise((promptResolve) => {
+          prompt("What do you do?\nAttack, block", async (i) => {
+            const action = i.toLowerCase();
+            if (action === "attack") {
+              const damage = 20 + Math.ceil(Math.random() * 10) - enemy.defense;
+              // critical hit
+              if (Math.random() < 0.2) damage += 30;
+              await delay(1000);
+              console.log(`You hit ${enemy.name} and dealt ${damage} damage!`);
+              await delay(1000);
+              const hurt = guide.action(player);
+              console.log(
+                `${enemy.name} punched you and dealt ${hurt} damage!`,
+              );
+            } else if (action === "block") {
+              console.log("blocked");
+            }
+            promptResolve();
+          });
+        });
+      }
+    });
   }
 }
 module.exports = {
